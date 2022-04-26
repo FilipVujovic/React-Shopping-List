@@ -10,12 +10,15 @@ import Alert from "@mui/material/Alert";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CategorySelect from "../components/CategorySelect";
+import { useNavigate } from "react-router-dom";
 const theme = createTheme();
 
 export default function AddShop() {
   const [success, setSuccess] = useState();
   const [selectedShop, setSelectedShop] = useState();
   const [shops, setShops] = useState();
+  const [message, setMessage] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchShops();
@@ -38,6 +41,7 @@ export default function AddShop() {
     const name = new FormData(event.currentTarget).get("listName");
 
     if (!name || !selectedShop) {
+      setMessage("Please provide all required data!");
       setSuccess(false);
       return;
     }
@@ -56,10 +60,18 @@ export default function AddShop() {
     });
 
     if (!response.ok) {
+      if (response.status === 500) {
+        setMessage("List name aleready exists!");
+      }
       setSuccess(false);
       return;
     }
+
     setSuccess(true);
+
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
   };
 
   return (
@@ -70,7 +82,7 @@ export default function AddShop() {
           <Alert severity="success">List added successfully.</Alert>
         )}
         {success === false && (
-          <Alert severity="error">An error occured - Check input data!</Alert>
+          <Alert severity="error">An error occured - {message}</Alert>
         )}
         <Box
           sx={{

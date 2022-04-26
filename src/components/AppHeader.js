@@ -10,6 +10,9 @@ import MuiDrawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import HomeIcon from "@mui/icons-material/Home";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import { styled } from "@mui/material/styles";
 
 import { MainListItems, SecondaryListItems } from "../components/MenuItems";
@@ -98,7 +101,9 @@ export default function AppHeader(props) {
             sx={{ flexGrow: 1 }}
             align="center"
           >
-            {props.listName}
+            {`${props.listName
+              .charAt(0)
+              .toUpperCase()}${props.listName.substring(1, 50)}`}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -115,10 +120,14 @@ export default function AppHeader(props) {
             <ChevronLeftIcon />
           </IconButton>
         </Toolbar>
-        <IconButton onClick={() => navigate("/")}>
-          <HomeIcon />
-        </IconButton>
+
         <List component="nav">
+          <ListItemButton onClick={() => navigate("/")}>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Home" />
+          </ListItemButton>
           <MainListItems changeScreen={props.changeScreen} />
           <Divider sx={{ my: 1 }} />
           <SecondaryListItems changeScreen={props.changeScreen} />

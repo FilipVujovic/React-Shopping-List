@@ -13,6 +13,7 @@ import ItemList from "../components/ItemList";
 import AddItem from "./AddItem";
 import AddShop from "./AddShop";
 import AddCategory from "./AddCategory";
+import ListOptionsLanding from "../components/ListOptionsLanding";
 
 const mdTheme = createTheme();
 
@@ -47,10 +48,11 @@ function DashboardContent() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
+              {buttonAction === 0 && <ListOptionsLanding />}
               {buttonAction === 1 && <ItemList />}
               {buttonAction === 2 && <AddItem />}
               {buttonAction === 3 && <AddShop />}
-              {buttonAction === 4 && <AddCategory />}
+              {buttonAction === 4 && <AddCategory timeout={true} />}
             </Grid>
           </Container>
         </Box>

@@ -18,6 +18,7 @@ export default function InputSlider(props) {
   };
 
   const handleInputChange = (event) => {
+    console.log(event.target.value);
     props.setQuantity(
       event.target.value === "" ? "" : Number(event.target.value)
     );

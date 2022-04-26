@@ -40,10 +40,12 @@ export default function CategorySelect(props) {
           input={<OutlinedInput label={props.placeholder} />}
           MenuProps={MenuProps}
         >
-          {props.categoryData !== undefined ? (
+          {props.categoryData !== undefined && props.categoryData.length > 0 ? (
             props.categoryData.map((category) => (
               <MenuItem key={category._id} value={category._id}>
-                {category.name}
+                {`${category.name
+                  .charAt(0)
+                  .toUpperCase()}${category.name.substring(1, 50)}`}
               </MenuItem>
             ))
           ) : (

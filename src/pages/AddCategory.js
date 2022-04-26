@@ -9,11 +9,15 @@ import Container from "@mui/material/Container";
 import Alert from "@mui/material/Alert";
 import CategoryTwoToneIcon from "@mui/icons-material/CategoryTwoTone";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme();
 
-export default function AddShop() {
+export default function AddShop(props) {
   const [success, setSuccess] = useState();
+  const [message, setMessage] = useState();
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -22,6 +26,7 @@ export default function AddShop() {
     const description = new FormData(event.currentTarget).get("description");
 
     if (!name || !description) {
+      setMessage("Please provide all required data!");
       setSuccess(false);
       return;
     }
@@ -40,10 +45,16 @@ export default function AddShop() {
     });
 
     if (!response.ok) {
+      setMessage("Check input data!");
       setSuccess(false);
       return;
     }
     setSuccess(true);
+    if (!props.timeout) {
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    }
   };
 
   return (
@@ -54,7 +65,7 @@ export default function AddShop() {
           <Alert severity="success">Category added successfully.</Alert>
         )}
         {success === false && (
-          <Alert severity="error">An error occured - Check input data!</Alert>
+          <Alert severity="error">An error occured - {message}</Alert>
         )}
         <Box
           sx={{

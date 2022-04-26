@@ -7,9 +7,9 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import Header from "./LandingHeader";
+import ItemsNotFound from "../../components/ItemsNotFound";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -28,7 +28,6 @@ export default function LandingUtil() {
   const [selectedList, setSelectedList] = useState("");
   const [categoryData, setCategoryData] = useState();
   const [searchCriteria, setSearchCriteria] = useState("");
-  const [category, setCategory] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -93,29 +92,40 @@ export default function LandingUtil() {
           sections={sections}
           setSearch={setSearchCriteria}
           categoryData={categoryData}
-          setCategory={setCategory}
         />
         <main>
           <Grid sx={{ mt: 3 }}>
-            <List>
-              {dynamicSearch().map((list) => (
-                <Fragment>
-                  <ListItemButton
-                    selected={selectedList === list.name}
-                    onClick={(event) => handleListItemClick(event, list.name)}
-                  >
-                    <ListItemIcon>
-                      <FactCheckIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={list.name}
-                      secondary={list.shop.name}
-                    />
-                  </ListItemButton>
-                  <Divider variant="middle" />
-                </Fragment>
-              ))}
-            </List>
+            {lists.length === 0 ? (
+              <ItemsNotFound comp="list"></ItemsNotFound>
+            ) : (
+              <List>
+                {dynamicSearch().map((list) => (
+                  <Fragment>
+                    <ListItemButton
+                      sx={{
+                        backgroundColor: "rgb(210,210,210)",
+                        borderRadius: 28,
+                        mb: 2,
+                      }}
+                      selected={selectedList === list.name}
+                      onClick={(event) => handleListItemClick(event, list.name)}
+                    >
+                      <ListItemIcon>
+                        <FactCheckIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={`${list.name
+                          .charAt(0)
+                          .toUpperCase()}${list.name.substring(1, 50)}`}
+                        secondary={`${list.shop.name
+                          .charAt(0)
+                          .toUpperCase()}${list.shop.name.substring(1, 50)}`}
+                      />
+                    </ListItemButton>
+                  </Fragment>
+                ))}
+              </List>
+            )}
           </Grid>
         </main>
       </Container>

@@ -23,6 +23,7 @@ export default function AddItem() {
   const [quantityValue, setQuantityValue] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState();
   const [categoryData, setCategoryData] = useState();
+  const [message, setMessage] = useState();
 
   const listData = useSelector((state) => state.list);
 
@@ -49,6 +50,7 @@ export default function AddItem() {
     const name = new FormData(event.currentTarget).get("itemName");
 
     if (!selectedCategory || !quantityValue || !name) {
+      setMessage("Please provide all required data!");
       setSuccess(false);
       return;
     }
@@ -70,6 +72,7 @@ export default function AddItem() {
     });
 
     if (!addItemToDatabase.ok) {
+      setMessage("Check input data!");
       setSuccess(false);
       return;
     }
@@ -129,7 +132,7 @@ export default function AddItem() {
           <Alert severity="success">Item added successfully.</Alert>
         )}
         {success === false && (
-          <Alert severity="error">An error occured - Check input data!</Alert>
+          <Alert severity="error">An error occured - {message}</Alert>
         )}
         <Box
           sx={{

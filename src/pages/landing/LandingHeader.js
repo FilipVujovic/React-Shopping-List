@@ -1,9 +1,10 @@
-import { useState, Fragment } from "react";
+import { Fragment } from "react";
 import PropTypes from "prop-types";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import SearchBar from "../../components/SearchBar";
+import FactCheckIcon from "@mui/icons-material/FactCheck";
 
 function Header(props) {
   const { sections, title } = props;
@@ -11,12 +12,13 @@ function Header(props) {
   return (
     <Fragment>
       <Toolbar sx={{ borderBottom: 3, borderColor: "divider" }}>
+        <FactCheckIcon></FactCheckIcon>
         <Typography
           component="h2"
           variant="h5"
           color="inherit"
           align="left"
-          sx={{ m: 0, flex: 1 }}
+          sx={{ m: 1, flex: 1 }}
         >
           {title}
         </Typography>
@@ -39,6 +41,7 @@ function Header(props) {
             key={section.title}
             variant="body2"
             href={section.url}
+            underline="hover"
             sx={{ p: 1, flexShrink: 0 }}
           >
             {section.title}
