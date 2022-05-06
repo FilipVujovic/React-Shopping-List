@@ -26,7 +26,6 @@ const theme = createTheme();
 export default function LandingUtil() {
   const [lists, setLists] = useState([]);
   const [selectedList, setSelectedList] = useState("");
-  const [categoryData, setCategoryData] = useState();
   const [searchCriteria, setSearchCriteria] = useState("");
 
   const navigate = useNavigate();
@@ -34,7 +33,6 @@ export default function LandingUtil() {
 
   useEffect(() => {
     getLists();
-    getCategoryData();
   }, []);
 
   const dynamicSearch = () => {
@@ -58,28 +56,20 @@ export default function LandingUtil() {
   };
 
   const getLists = () => {
-    fetch("http://localhost:9000/list", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
+    fetch(
+      "https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/list/all",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
-        setLists(data);
-      });
-  };
-
-  const getCategoryData = () => {
-    fetch("http://localhost:9000/category", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCategoryData(data);
+        if (data) {
+          setLists(data.items);
+        }
       });
   };
 
@@ -91,7 +81,6 @@ export default function LandingUtil() {
           title="List Management"
           sections={sections}
           setSearch={setSearchCriteria}
-          categoryData={categoryData}
         />
         <main>
           <Grid sx={{ mt: 3 }}>

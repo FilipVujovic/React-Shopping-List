@@ -32,12 +32,15 @@ export default function AddItem() {
   }, []);
 
   const getCategoryData = () => {
-    fetch("http://localhost:9000/category", {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
+    fetch(
+      "https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/category/all",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         setCategoryData(data);
@@ -47,9 +50,9 @@ export default function AddItem() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const name = new FormData(event.currentTarget).get("itemName");
+    const itemName = new FormData(event.currentTarget).get("itemName");
 
-    if (!selectedCategory || !quantityValue || !name) {
+    if (!selectedCategory || !quantityValue || !itemName) {
       setMessage("Please provide all required data!");
       setSuccess(false);
       return;
@@ -57,19 +60,21 @@ export default function AddItem() {
 
     //Collect item data
     const payload = {
-      name,
-      quantity: quantityValue,
-      category: selectedCategory[0],
+      itemName,
+      itemQuantity: quantityValue,
+      itemCategory: selectedCategory[0],
     };
-
     //Add item to the database
-    const addItemToDatabase = await fetch("http://localhost:9000/item", {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const addItemToDatabase = await fetch(
+      "https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/item",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!addItemToDatabase.ok) {
       setMessage("Check input data!");
@@ -78,17 +83,19 @@ export default function AddItem() {
     }
 
     const jsonItem = await addItemToDatabase.json();
-
     //Get item ID to insert into list later
-    const itemId = jsonItem.result.item._id;
+    const newItem = jsonItem.body;
 
     //Fetch list to get item array
-    const list = await fetch(`http://localhost:9000/list/${listData.name}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
+    const list = await fetch(
+      `https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/list/single?listName=${listData.name}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
 
     if (!list.ok) {
       setSuccess(false);
@@ -98,22 +105,23 @@ export default function AddItem() {
     const jsonList = await list.json();
 
     //Since fetch returns an array of lists we take the first element
-    const listItems = jsonList[0].items;
+    const listItems = jsonList.list.items;
 
     //Map item objects into item IDs to pass to the addItemToList method
-    const itemIdArray = listItems.map((item) => item._id);
+    // const itemIdArray = listItems.map((item) => item._id);
 
-    addItemToList(itemIdArray, itemId);
+    addItemToList(listItems, newItem);
   };
 
-  const addItemToList = (items, itemId) => {
+  const addItemToList = (items, newItem) => {
+    console.log(items);
+    console.log(newItem);
     const payload = {
-      _id: listData.id,
-      name: listData.name,
-      items: [...items, itemId],
-      shop: listData.shop._id,
+      listId: listData.id,
+      listItems: [...items, newItem],
     };
-    fetch("http://localhost:9000/list", {
+    console.log(payload);
+    fetch("https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/list", {
       method: "PATCH",
       body: JSON.stringify(payload),
       headers: {

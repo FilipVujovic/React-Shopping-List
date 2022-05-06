@@ -24,11 +24,15 @@ export default function AddShop() {
     fetchShops();
   }, []);
   const fetchShops = () => {
-    fetch("http://localhost:9000/shop", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(
+      "https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/shop/all",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         setShops(data);
@@ -37,27 +41,30 @@ export default function AddShop() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log(shops);
+    const listName = new FormData(event.currentTarget).get("listName");
 
-    const name = new FormData(event.currentTarget).get("listName");
-
-    if (!name || !selectedShop) {
+    if (!listName || !selectedShop) {
       setMessage("Please provide all required data!");
       setSuccess(false);
       return;
     }
 
     const payload = {
-      name,
-      items: [],
-      shop: selectedShop[0],
+      listName,
+      listItems: [],
+      listShop: selectedShop[0],
     };
-    const response = await fetch("http://localhost:9000/list", {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      "https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/list",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       if (response.status === 500) {

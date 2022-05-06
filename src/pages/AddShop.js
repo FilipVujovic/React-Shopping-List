@@ -22,36 +22,40 @@ export default function AddShop() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const name = new FormData(event.currentTarget).get("name");
-    const address = new FormData(event.currentTarget).get("address");
-    const city = new FormData(event.currentTarget).get("city");
+    const shopName = new FormData(event.currentTarget).get("name");
+    const shopAddress = new FormData(event.currentTarget).get("address");
+    const shopCity = new FormData(event.currentTarget).get("city");
 
-    if (!name || !address || !city) {
+    if (!shopName || !shopAddress || !shopCity) {
       setMessage("Please provide all required data!");
       setSuccess(false);
       return;
     }
 
     const payload = {
-      name,
-      address,
-      city,
+      shopName,
+      shopAddress,
+      shopCity,
     };
 
-    const response = await fetch("http://localhost:9000/shop", {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
+    const response = await fetch(
+      "https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/shop",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response);
     if (!response.ok) {
       console.log(response);
       setMessage("Check input data!");
       setSuccess(false);
       return;
     }
+
     setSuccess(true);
     setTimeout(() => {
       navigate("/");

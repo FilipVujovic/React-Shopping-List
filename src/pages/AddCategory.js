@@ -22,27 +22,32 @@ export default function AddShop(props) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const name = new FormData(event.currentTarget).get("name");
-    const description = new FormData(event.currentTarget).get("description");
+    const categoryName = new FormData(event.currentTarget).get("name");
+    const categoryDescription = new FormData(event.currentTarget).get(
+      "description"
+    );
 
-    if (!name || !description) {
+    if (!categoryName || !categoryDescription) {
       setMessage("Please provide all required data!");
       setSuccess(false);
       return;
     }
 
     const payload = {
-      name,
-      description,
+      categoryName,
+      categoryDescription,
     };
 
-    const response = await fetch("http://localhost:9000/category", {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      "https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/category",
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       setMessage("Check input data!");

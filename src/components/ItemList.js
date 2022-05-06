@@ -37,15 +37,18 @@ export default function ItemList() {
   }, [items.length]);
 
   const getItemsForList = () => {
-    return fetch(`http://localhost:9000/list/${listData.name}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
+    return fetch(
+      `https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/list/single?listName=${listData.name}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    )
       .then((response) => response.json())
       .then((items) => {
-        setItems(items[0].items);
+        setItems(items.list.items);
       });
   };
 
@@ -55,10 +58,11 @@ export default function ItemList() {
     if (itemLength > 0) {
       for (let i = 0; i < itemLength; i++) {
         const response = await fetch(
-          `http://localhost:9000/catbyId/${items[i].category}`
+          `https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/category/single?categoryId=${items[i].category}`
         );
         const responseJSON = await response.json();
-        tempData.push(responseJSON[0]);
+
+        tempData.push(responseJSON);
       }
       const ids = tempData.map((obj) => obj._id);
 
@@ -81,21 +85,37 @@ export default function ItemList() {
     setChecked(newChecked);
   };
 
-  const handleUpdate = () => {
-    checked.forEach((item) => {
-      fetch(`http://localhost:9000/item/${item._id}`, {
-        method: "DELETE",
-      });
-      setChecked(checked.filter((checkedItem) => checkedItem !== item));
-    });
-    getItemsForList();
+  const handleUpdate = async () => {
+    if (checked.length > 0) {
+      for (let i = 0; i < checked.length; i++) {
+        await fetch(
+          `https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/item?itemId=${checked[i]._id}&listId=${listData.id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
+        setChecked(checked.filter((checkedItem) => checkedItem !== checked[i]));
+      }
+      getItemsForList();
+    }
   };
 
   const handleDelete = () => {
     setDeleteAlert(false);
-    fetch(`http://localhost:9000/list/${listData.id}`, {
-      method: "DELETE",
-    }).then((response) => {
+    fetch(
+      `https://0mckkj9uk9.execute-api.us-east-1.amazonaws.com/Dev/list?listId=${listData.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    ).then((response) => {
       navigate("/");
     });
   };
